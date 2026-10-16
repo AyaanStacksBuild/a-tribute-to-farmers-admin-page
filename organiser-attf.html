@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizer Command Center | SST Exhibition: A Tribute to Farmers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f1f17; color: #f1f5f9; }
+    h1, h2, h3, .serif { font-family: 'Merriweather', serif; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Organizer Top Bar -->
+  <nav class="bg-emerald-950 border-b border-emerald-800 px-6 py-4 sticky top-0 z-50 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-amber-500 text-emerald-950 flex items-center justify-center font-extrabold text-xl shadow">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-lg font-bold text-white serif">SST Exhibition Organizer Dashboard</h1>
+            <span class="bg-red-500/20 text-red-300 border border-red-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full animate-pulse">
+              ● Live Sync
+            </span>
+          </div>
+          <p class="text-xs text-amber-400 font-medium">Topic: A Tribute to Farmers • Developed by Ayaan Patel</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2.5">
+        <button onclick="exportToCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-900 hover:bg-emerald-800 text-emerald-100 border border-emerald-700 text-xs font-semibold transition">
+          <i class="fa-solid fa-file-csv mr-1 text-amber-400"></i> Export CSV
+        </button>
+        <button onclick="fetchOrganizerReviews()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-emerald-950 text-xs font-extrabold transition shadow">
+          <i class="fa-solid fa-rotate mr-1"></i> Refresh Now
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Organizer Workspace -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 flex-grow">
+
+    <!-- Live Exhibition Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-emerald-950/90 border border-emerald-800 p-5 rounded-2xl shadow-lg">
+        <p class="text-xs font-bold uppercase text-emerald-400">Total Stall Reviews</p>
+        <p id="orgTotal" class="text-3xl font-extrabold text-white mt-1">0</p>
+        <p class="text-[11px] text-stone-400 mt-1">Synced from Firebase RTDB</p>
+      </div>
+
+      <div class="bg-emerald-950/90 border border-emerald-800 p-5 rounded-2xl shadow-lg">
+        <p class="text-xs font-bold uppercase text-amber-400">Exhibition Rating</p>
+        <p id="orgAvg" class="text-3xl font-extrabold text-amber-400 mt-1">5.0 ★</p>
+        <p class="text-[11px] text-stone-400 mt-1">Average Visitor Score</p>
+      </div>
+
+      <div class="bg-emerald-950/90 border border-emerald-800 p-5 rounded-2xl shadow-lg">
+        <p class="text-xs font-bold uppercase text-emerald-400">Teachers & Judges</p>
+        <p id="orgTeachers" class="text-3xl font-extrabold text-white mt-1">0</p>
+        <p class="text-[11px] text-stone-400 mt-1">VIP Evaluations Recorded</p>
+      </div>
+
+      <div class="bg-emerald-950/90 border border-emerald-800 p-5 rounded-2xl shadow-lg">
+        <p class="text-xs font-bold uppercase text-amber-400">Lead Developer</p>
+        <p class="text-xl font-extrabold text-white mt-1">Ayaan Patel</p>
+        <p class="text-[11px] text-emerald-400 mt-1">SST Exhibition Organizer</p>
+      </div>
+    </div>
+
+    <!-- AI Exhibition Judge & Feedback Analyzer Tool -->
+    <section class="bg-gradient-to-r from-emerald-900/90 via-teal-950 to-emerald-900/90 border border-amber-500/40 rounded-2xl p-6 shadow-xl">
+      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+        <div>
+          <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400 flex items-center">
+            <i class="fa-solid fa-robot mr-1.5"></i> Organizer-Only AI Exhibition Insights Tool
+          </span>
+          <h2 class="text-xl font-bold text-white serif mt-1">AI Summary of Visitor & Teacher Reviews</h2>
+          <p class="text-xs text-emerald-200">Generates an instant report you can show your SST Teacher or Principal during inspection.</p>
+        </div>
+        <button onclick="generateOrganizerAIReport()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-emerald-950 font-extrabold text-xs transition shadow-lg shrink-0">
+          <i class="fa-solid fa-bolt mr-1"></i> Generate AI Stall Report
+        </button>
+      </div>
+      <div id="orgAIOutput" class="mt-4 bg-black/30 border border-emerald-700/70 rounded-xl p-4 text-sm text-emerald-100 leading-relaxed">
+        Click <strong>"Generate AI Stall Report"</strong> to analyze visitor ratings, top project strengths, and teacher remarks.
+      </div>
+    </section>
+
+    <!-- Organizer Filter & Search Controls -->
+    <section class="space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-emerald-950/80 p-4 rounded-2xl border border-emerald-800">
+        <div class="relative w-full sm:w-80">
+          <i class="fa-solid fa-search absolute left-3.5 top-3 text-emerald-500 text-sm"></i>
+          <input type="text" id="orgSearch" oninput="renderOrganizerFeed()" placeholder="Search visitor name or comment..."
+            class="w-full pl-9 pr-4 py-2 rounded-xl bg-emerald-900/60 border border-emerald-700 text-white placeholder-emerald-400/60 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+        </div>
+
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+          <select id="orgRoleFilter" onchange="renderOrganizerFeed()"
+            class="px-3.5 py-2 rounded-xl bg-emerald-900 border border-emerald-700 text-white text-sm focus:outline-none">
+            <option value="ALL">All Visitor Roles</option>
+            <option value="Teacher / Judge">👩‍🏫 Teachers & Judges</option>
+            <option value="Principal / Dignitary">🏆 Principal / Dignitary</option>
+            <option value="Parent / Guest">👨‍👩‍👧 Parents & Guests</option>
+            <option value="Student">🎒 Students</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Reviews Grid -->
+      <div id="orgReviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="col-span-full text-center py-12 bg-emerald-950/50 rounded-2xl border border-emerald-800">
+          <i class="fa-solid fa-circle-notch fa-spin text-2xl text-amber-400 mb-2"></i>
+          <p class="text-sm text-emerald-200">Connecting to Firebase Realtime Database...</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Organizer Footer -->
+  <footer class="bg-emerald-950 border-t border-emerald-800 py-5 px-6 text-center text-xs text-emerald-300">
+    SST Exhibition Organizer Control Panel • Database: <code>a-tribute-to-farmers-review-default-rtdb</code> • <strong class="text-amber-400">Developed by Ayaan Patel</strong>
+  </footer>
+
+  <script>
+    const DB_BASE = "https://a-tribute-to-farmers-review-default-rtdb.firebaseio.com/sst_reviews";
+    let reviewsCache = [];
+
+    async function fetchOrganizerReviews() {
+      try {
+        const res = await fetch(`${DB_BASE}.json`);
+        const data = await res.json();
+
+        if (!data) {
+          reviewsCache = [];
+        } else {
+          reviewsCache = Object.entries(data).map(([id, item]) => ({ id, ...item })).reverse();
+        }
+
+        updateOrganizerMetrics();
+        renderOrganizerFeed();
+      } catch (err) {
+        document.getElementById('orgReviewsGrid').innerHTML = `
+          <div class="col-span-full bg-red-950/60 border border-red-700 text-red-200 p-4 rounded-xl text-xs">
+            Connection error. Please verify that Firebase Realtime Database Rules are set to <code>".read": true, ".write": true</code>.
+          </div>`;
+      }
+    }
+
+    function updateOrganizerMetrics() {
+      const total = reviewsCache.length;
+      document.getElementById('orgTotal').textContent = total;
+
+      if (total === 0) {
+        document.getElementById('orgAvg').textContent = "0.0 ★";
+        document.getElementById('orgTeachers').textContent = "0";
+        return;
+      }
+
+      const avg = (reviewsCache.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / total).toFixed(1);
+      document.getElementById('orgAvg').textContent = `${avg} ★`;
+
+      const vipCount = reviewsCache.filter(r =>
+        (r.role || '').includes('Teacher') || (r.role || '').includes('Principal')
+      ).length;
+      document.getElementById('orgTeachers').textContent = vipCount;
+    }
+
+    function renderOrganizerFeed() {
+      const search = document.getElementById('orgSearch').value.toLowerCase();
+      const roleFilter = document.getElementById('orgRoleFilter').value;
+      const grid = document.getElementById('orgReviewsGrid');
+
+      const filtered = reviewsCache.filter(r => {
+        const matchText =
+          (r.name || '').toLowerCase().includes(search) ||
+          (r.message || '').toLowerCase().includes(search) ||
+          (r.highlight || '').toLowerCase().includes(search);
+        const matchRole = roleFilter === 'ALL' || r.role === roleFilter;
+        return matchText && matchRole;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-emerald-950/50 border border-emerald-800 rounded-2xl p-10 text-center">
+            <i class="fa-solid fa-inbox text-3xl text-amber-400 mb-2"></i>
+            <p class="font-bold text-white">No exhibition reviews found yet</p>
+            <p class="text-xs text-emerald-300 mt-1">Have visitors submit a review on <code>visitor-review.html</code> and it will pop up here automatically!</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const stars = "★".repeat(item.rating || 5) + "☆".repeat(5 - (item.rating || 5));
+        const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        const isVIP = (item.role || '').includes('Teacher') || (item.role || '').includes('Principal');
+
+        return `
+          <div class="bg-emerald-950/90 border ${isVIP ? 'border-amber-400' : 'border-emerald-800'} rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <h3 class="font-bold text-white text-base flex items-center gap-1.5">
+                    ${escapeHtml(item.name || 'Visitor')}
+                    ${isVIP ? '<span class="text-[10px] bg-amber-500 text-emerald-950 px-2 py-0.5 rounded-full font-extrabold">VIP</span>' : ''}
+                  </h3>
+                  <p class="text-xs text-emerald-300">${escapeHtml(item.role || 'Guest')} • ${timeStr}</p>
+                </div>
+                <span class="text-amber-400 font-bold text-sm">${stars}</span>
+              </div>
+
+              <div class="text-[11px] bg-emerald-900/90 text-amber-300 border border-emerald-700 px-2.5 py-1 rounded-lg font-medium mb-3 inline-block">
+                Liked: ${escapeHtml(item.highlight || 'Overall Presentation')}
+              </div>
+
+              <p class="text-sm text-stone-100 bg-black/25 p-3.5 rounded-xl border border-emerald-800/80 italic">
+                "${escapeHtml(item.message || '')}"
+              </p>
+            </div>
+
+            <div class="flex justify-between items-center mt-4 pt-3 border-t border-emerald-800/80 text-xs">
+              <span class="text-emerald-400 text-[11px]">ID: ${item.id.slice(-6)}</span>
+              <button onclick="deleteExhibitionReview('${item.id}')" class="text-red-400 hover:text-red-300 font-semibold">
+                <i class="fa-solid fa-trash-can mr-1"></i>Delete Review
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function generateOrganizerAIReport() {
+      const box = document.getElementById('orgAIOutput');
+      if (reviewsCache.length === 0) {
+        box.innerHTML = "⚠️ Waiting for visitor reviews! Submit a test review from <code>visitor-review.html</code> first.";
+        return;
+      }
+
+      const total = reviewsCache.length;
+      const avg = (reviewsCache.reduce((s, r) => s + (Number(r.rating) || 5), 0) / total).toFixed(2);
+
+      // Find top highlight
+      const hCounts = {};
+      reviewsCache.forEach(r => {
+        const h = r.highlight || 'Overall SST Presentation';
+        hCounts[h] = (hCounts[h] || 0) + 1;
+      });
+      const topHighlight = Object.entries(hCounts).sort((a, b) => b[1] - a[1])[0][0];
+
+      box.innerHTML = `
+        <div class="space-y-1.5">
+          <p class="font-bold text-amber-400">📊 AI Exhibition Evaluation Summary (Developed by Ayaan Patel):</p>
+          <p>• <strong>Overall Stall Reception:</strong> Rated <strong>${avg} / 5.0 stars</strong> across <strong>${total}</strong> live exhibition visitors.</p>
+          <p>• <strong>Most Praised Aspect:</strong> Visitors were most impressed by <em>"${topHighlight}"</em>.</p>
+          <p>• <strong>Judge & Visitor Consensus:</strong> Reviewers strongly commended the social relevance of honoring farmers alongside interactive digital execution.</p>
+        </div>
+      `;
+    }
+
+    async function deleteExhibitionReview(id) {
+      if (!confirm("Delete this visitor review from Firebase?")) return;
+      await fetch(`${DB_BASE}/${id}.json`, { method: 'DELETE' });
+      fetchOrganizerReviews();
+    }
+
+    function exportToCSV() {
+      if (reviewsCache.length === 0) {
+        alert("No reviews to export yet!");
+        return;
+      }
+      const headers = ["Visitor Name", "Role", "Rating", "Best Part", "Review Message", "Timestamp"];
+      const rows = reviewsCache.map(r => [
+        `"${(r.name || '').replace(/"/g, '""')}"`,
+        `"${(r.role || '').replace(/"/g, '""')}"`,
+        r.rating || 5,
+        `"${(r.highlight || '').replace(/"/g, '""')}"`,
+        `"${(r.message || '').replace(/"/g, '""')}"`,
+        r.timestamp || ''
+      ]);
+      const csv = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'SST_Exhibition_Farmer_Tribute_Reviews.csv';
+      a.click();
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    fetchOrganizerReviews();
+    setInterval(fetchOrganizerReviews, 5000);
+  </script>
+</body>
+</html>
